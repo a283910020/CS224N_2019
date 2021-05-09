@@ -58,7 +58,7 @@ def naiveSoftmaxLossAndGradient(
     ### This numerically stable implementation helps you avoid issues pertaining
     ### to integer overflow. 
 
-    ## this is just for test
+
     ### END YOUR CODE
 
     return loss, gradCenterVec, gradOutsideVecs
