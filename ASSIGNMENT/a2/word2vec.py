@@ -16,11 +16,8 @@ def sigmoid(x):
     s -- sigmoid(x)
     """
 
-    ### YOUR CODE HERE
 
-    ### END YOUR CODE
-
-    return s
+    return 1 / (1 + np.exp(-x))
 
 
 def naiveSoftmaxLossAndGradient(
