@@ -45,7 +45,7 @@ def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1
     ### Please see the following docs for support:
     ###     Adam Optimizer: https://pytorch.org/docs/stable/optim.html
     ###     Cross Entropy Loss: https://pytorch.org/docs/stable/nn.html#crossentropyloss
-
+    # optimizer = optim.Adam([var1, var2], lr=0.0001)
 
     ### END YOUR CODE
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     debug = True
     # debug = False
 
-    assert(torch.__version__ == "1.0.0"),  "Please install torch version 1.0.0"
+    # assert(torch.__version__ == "1.0.0"),  "Please install torch version 1.0.0"
 
     print(80 * "=")
     print("INITIALIZING")

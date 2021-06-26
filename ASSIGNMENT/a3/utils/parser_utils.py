@@ -11,7 +11,7 @@ import os
 import logging
 from collections import Counter
 from . general_utils import get_minibatches
-from parser_transitions import minibatch_parse
+from .. parser_transitions import minibatch_parse
 
 from tqdm import tqdm
 import torch
@@ -74,14 +74,14 @@ class Parser(object):
         self.tran2id = {t: i for (i, t) in enumerate(trans)}
         self.id2tran = {i: t for (i, t) in enumerate(trans)}
 
-        # logging.info('Build dictionary for part-of-speech tags.')
+        logging.info('Build dictionary for part-of-speech tags.')
         tok2id.update(build_dict([P_PREFIX + w for ex in dataset for w in ex['pos']],
                                   offset=len(tok2id)))
         tok2id[P_PREFIX + UNK] = self.P_UNK = len(tok2id)
         tok2id[P_PREFIX + NULL] = self.P_NULL = len(tok2id)
         tok2id[P_PREFIX + ROOT] = self.P_ROOT = len(tok2id)
 
-        # logging.info('Build dictionary for words.')
+        logging.info('Build dictionary for words.')
         tok2id.update(build_dict([w for ex in dataset for w in ex['word']],
                                   offset=len(tok2id)))
         tok2id[UNK] = self.UNK = len(tok2id)
