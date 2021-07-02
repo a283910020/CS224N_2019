@@ -13,6 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class ParserModel(nn.Module):
     """ Feedforward neural network with an embedding layer and single hidden layer.
     The ParserModel will predict which transition should be applied to a
@@ -71,8 +72,11 @@ class ParserModel(nn.Module):
         ###     Linear Layer: https://pytorch.org/docs/stable/nn.html#torch.nn.Linear
         ###     Xavier Init: https://pytorch.org/docs/stable/nn.html#torch.nn.init.xavier_uniform_
         ###     Dropout: https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout
-
-
+        self.embed_to_hidden = nn.Linear(self.embed_size * self.n_features, self.hidden_size)
+        nn.init.xavier_uniform_(self.embed_to_hidden.weight, gain=1)
+        self.dropout = nn.Dropout(p=self.dropout_prob)
+        self.hidden_to_logits = nn.Linear(self.hidden_size, self.n_classes)
+        nn.init.xavier_uniform_(self.hidden_to_logits.weight, gain=1)
         ### END YOUR CODE
 
     def embedding_lookup(self, t):
@@ -106,7 +110,7 @@ class ParserModel(nn.Module):
 
 
         ### END YOUR CODE
-        return x
+        return self.pretrained_embeddings(t).view(t.size(0), -1)
 
 
     def forward(self, t):
@@ -141,7 +145,10 @@ class ParserModel(nn.Module):
         ###
         ### Please see the following docs for support:
         ###     ReLU: https://pytorch.org/docs/stable/nn.html?highlight=relu#torch.nn.functional.relu
-
+        embeddings = self.embedding_lookup(t)
+        hidden = F.relu(self.embed_to_hidden(embeddings))
+        hidden_drop = self.dropout(hidden)
+        logits = self.hidden_to_logits(hidden_drop)
 
         ### END YOUR CODE
         return logits

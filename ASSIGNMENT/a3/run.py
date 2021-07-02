@@ -7,7 +7,6 @@ Sahil Chopra <schopra8@stanford.edu>
 """
 from datetime import datetime
 import os
-import pickle
 import math
 import time
 
@@ -16,7 +15,7 @@ import torch
 from tqdm import tqdm
 
 from parser_model import ParserModel
-from utils.parser_utils import minibatches, load_and_preprocess_data, AverageMeter
+from CS224N.ASSIGNMENT.a3.parser_utils import minibatches, load_and_preprocess_data, AverageMeter
 
 # -----------------
 # Primary Functions
@@ -45,8 +44,8 @@ def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1
     ### Please see the following docs for support:
     ###     Adam Optimizer: https://pytorch.org/docs/stable/optim.html
     ###     Cross Entropy Loss: https://pytorch.org/docs/stable/nn.html#crossentropyloss
-    # optimizer = optim.Adam([var1, var2], lr=0.0001)
-
+    loss_func = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(parser.model.parameters(), lr=lr, weight_decay=1e-8)
     ### END YOUR CODE
 
     for epoch in range(n_epochs):
@@ -98,7 +97,10 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
             ###      4) Take step with the optimizer
             ### Please see the following docs for support:
             ###     Optimizer Step: https://pytorch.org/docs/stable/optim.html#optimizer-step
-
+            logits = parser.model(train_x)
+            loss = loss_func(logits, train_y)
+            loss.backward()
+            optimizer.step()
 
             ### END YOUR CODE
             prog.update(1)
@@ -115,8 +117,8 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
 
 if __name__ == "__main__":
     # Note: Set debug to False, when training on entire corpus
-    debug = True
-    # debug = False
+    # debug = True
+    debug = False
 
     # assert(torch.__version__ == "1.0.0"),  "Please install torch version 1.0.0"
 
