@@ -108,9 +108,9 @@ class ParserModel(nn.Module):
         ###     Embedding Layer: https://pytorch.org/docs/stable/nn.html#torch.nn.Embedding
         ###     View: https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view
 
-
+        embeddings = self.pretrained_embeddings(t).view(t.size(0), -1)
         ### END YOUR CODE
-        return self.pretrained_embeddings(t).view(t.size(0), -1)
+        return embeddings
 
 
     def forward(self, t):

@@ -15,7 +15,7 @@ import logging
 from collections import Counter
 
 from .general_utils import get_minibatches
-from CS224N.ASSIGNMENT.a3.parser_transitions import minibatch_parse
+import CS224N.ASSIGNMENT.a3.parser_transitions
 
 
 P_PREFIX = '<p>:'
@@ -44,6 +44,7 @@ class Parser(object):
     """Contains everything needed for transition-based dependency parsing except for the model"""
 
     def __init__(self, dataset):
+        print("called")
         root_labels = list([l for ex in dataset
                            for (h, l) in zip(ex['head'], ex['label']) if h == 0])
         counter = Counter(root_labels)
@@ -51,9 +52,11 @@ class Parser(object):
             logging.info('Warning: more than one root label')
             logging.info(counter)
         self.root_label = counter.most_common()[0][0]
+        print(counter.most_common()[0])
         deprel = [self.root_label] + list(set([w for ex in dataset
                                                for w in ex['label']
                                                if w != self.root_label]))
+        print(deprel)
         tok2id = {L_PREFIX + l: i for (i, l) in enumerate(deprel)}
         tok2id[L_PREFIX + NULL] = self.L_NULL = len(tok2id)
 
@@ -70,21 +73,19 @@ class Parser(object):
         else:
             trans = ['L-' + l for l in deprel] + ['R-' + l for l in deprel] + ['S']
             self.n_deprel = len(deprel)
-
+        print(trans)
         self.n_trans = len(trans)
         self.tran2id = {t: i for (i, t) in enumerate(trans)}
         self.id2tran = {i: t for (i, t) in enumerate(trans)}
 
         logging.info('Build dictionary for part-of-speech tags.')
-        tok2id.update(build_dict([P_PREFIX + w for ex in dataset for w in ex['pos']],
-                                  offset=len(tok2id)))
+        tok2id.update(build_dict([P_PREFIX + w for ex in dataset for w in ex['pos']], offset=len(tok2id)))
         tok2id[P_PREFIX + UNK] = self.P_UNK = len(tok2id)
         tok2id[P_PREFIX + NULL] = self.P_NULL = len(tok2id)
         tok2id[P_PREFIX + ROOT] = self.P_ROOT = len(tok2id)
 
         logging.info('Build dictionary for words.')
-        tok2id.update(build_dict([w for ex in dataset for w in ex['word']],
-                                  offset=len(tok2id)))
+        tok2id.update(build_dict([w for ex in dataset for w in ex['word']], offset=len(tok2id)))
         tok2id[UNK] = self.UNK = len(tok2id)
         tok2id[NULL] = self.NULL = len(tok2id)
         tok2id[ROOT] = self.ROOT = len(tok2id)
@@ -247,7 +248,7 @@ class Parser(object):
             sentence_id_to_idx[id(sentence)] = i
 
         model = ModelWrapper(self, dataset, sentence_id_to_idx)
-        dependencies = minibatch_parse(sentences, model, eval_batch_size)
+        dependencies = CS224N.ASSIGNMENT.a3.parser_transitions.minibatch_parse(sentences, model, eval_batch_size)
 
         UAS = all_tokens = 0.0
         with tqdm(total=len(dataset)) as prog:
@@ -307,6 +308,7 @@ def read_conll(in_file, lowercase=False, max_example=None):
                     break
         if len(word) > 0:
             examples.append({'word': word, 'pos': pos, 'head': head, 'label': label})
+    # print(examples)
     return examples
 
 

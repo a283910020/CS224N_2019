@@ -20,7 +20,7 @@ from CS224N.ASSIGNMENT.a3.parser_utils import minibatches, load_and_preprocess_d
 # -----------------
 # Primary Functions
 # -----------------
-def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=10, lr=0.0005):
+def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1, lr=0.0005):
     """ Train the neural dependency parser.
 
     @param parser (Parser): Neural Dependency Parser
@@ -117,8 +117,8 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
 
 if __name__ == "__main__":
     # Note: Set debug to False, when training on entire corpus
-    # debug = True
-    debug = False
+    debug = True
+    # debug = False
 
     # assert(torch.__version__ == "1.0.0"),  "Please install torch version 1.0.0"
 
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     print("INITIALIZING")
     print(80 * "=")
     parser, embeddings, train_data, dev_data, test_data = load_and_preprocess_data(debug)
-
+    print("="*20, "load_and_preprocess_data")
     start = time.time()
     model = ParserModel(embeddings)
     parser.model = model
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=10, lr=0.0005)
+    train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1, lr=0.0005)
 
     if not debug:
         print(80 * "=")

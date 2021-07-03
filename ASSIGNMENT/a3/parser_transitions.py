@@ -34,6 +34,7 @@ class PartialParse(object):
         # if use self.buffer = self.sentence, for memory reason, sentence will be modified
         self.buffer = sentence[:]
         self.dependencies = []
+        # print("init")
         ### END YOUR CODE
 
 
@@ -82,6 +83,7 @@ class PartialParse(object):
                                                         parsing the sentence. Represented as a list of
                                                         tuples where each tuple is of the form (head, dependent).
         """
+        print("=parse function")
         for transition in transitions:
             self.parse_step(transition)
         return self.dependencies
@@ -121,6 +123,7 @@ def minibatch_parse(sentences, model, batch_size):
     ###             to remove objects from the `unfinished_parses` list. This will free the underlying memory that
     ###             is being accessed by `partial_parses` and may cause your code to crash.
     partial_parse = [PartialParse(sentence) for sentence in sentences]
+    # print("initialize")
     unfinished_parses = partial_parse[:]
     while unfinished_parses:
         mini_batch = unfinished_parses[:batch_size]
@@ -208,6 +211,8 @@ def test_minibatch_parse():
                  ["left", "arcs", "only"],
                  ["left", "arcs", "only", "again"]]
     deps = minibatch_parse(sentences, DummyModel(), 2)
+    # for dep in deps:
+    #     print(dep)
     test_dependencies("minibatch_parse", deps[0],
                       (('ROOT', 'right'), ('arcs', 'only'), ('right', 'arcs')))
     test_dependencies("minibatch_parse", deps[1],
@@ -221,6 +226,7 @@ def test_minibatch_parse():
 
 if __name__ == '__main__':
     args = sys.argv
+
     if len(args) != 2:
         raise Exception("You did not provide a valid keyword. Either provide 'part_c' or 'part_d', when executing this script")
     elif args[1] == "part_c":
